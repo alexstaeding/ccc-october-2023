@@ -1,7 +1,7 @@
 package contest
 
 import framework.Framework
-import java.util.Comparator
+import java.awt.geom.Line2D
 import java.util.PriorityQueue
 import kotlin.math.abs
 
@@ -33,27 +33,65 @@ fun Pos.distanceTo(other: Pos): Int {
 fun String.toPos() = split(",").map { it.toInt() }.let { Pos(it[0], it[1]) }
 
 fun main() {
-    // challenge: sum of all numbers
-    val level = 2
+    val level = 3
 
     val example = Framework.readInputLines(level, "example")
-        .doLevel()
+        .doIntersection()
 
     println("Result:")
     println(example)
 
     for (i in 1..5) {
         val result = Framework.readInputLines(level, i.toString())
-            .doLevel()
+            .doIntersection()
         Framework.writeOutput(level, i.toString(), result)
     }
+}
+
+fun List<String>.doIntersection(): String {
+    val text = this
+    val dim = text.first().toInt()
+    val map = text.slice(1..dim + 1).map { it.toList() }
+    return text.slice(dim + 2 until text.size)
+        .map { it.split(" ").map { x -> x.toPos() } }
+        .joinToString("\n") { line ->
+            if (line.checkSelfIntersection()) "INVALID" else "VALID"
+        }
+}
+
+
+fun List<Pos>.checkSelfIntersection(): Boolean {
+    if (toSet().size != size) return true
+    val visited = mutableSetOf<Pos>()
+    // check whether the line made by a series x,y coordinates cross
+    // it may happen that the line crosses itself without any of the points being repeated
+
+    // create a line segment for each pair of points and check if any intersect
+
+    val pairs = windowed(2, 1)
+
+    for (i in pairs) {
+        for (j in pairs) {
+            // check if any of the points are the same
+            if (i[0] == j[0] || i[0] == j[1] || i[1] == j[0] || i[1] == j[1]) continue
+            if (Line2D.linesIntersect(
+                    i[0].x.toDouble(), i[0].y.toDouble(), i[1].x.toDouble(), i[1].y.toDouble(),
+                    j[0].x.toDouble(), j[0].y.toDouble(), j[1].x.toDouble(), j[1].y.toDouble(),
+                )
+            ) {
+                println("i: $i, j: $j")
+                return true
+            }
+        }
+    }
+
+    return false
 }
 
 fun List<String>.doLevel(): String {
     val text = this
     val dim = text.first().toInt()
     val map = text.slice(1..dim + 1).map { it.toList() }
-    val numInts = text[dim + 1].toInt()
     return text.slice(dim + 2 until text.size)
         .map { it.split(" ").map { x -> x.toPos() }.zipWithNext().single() }
         .joinToString("\n") { pair ->
