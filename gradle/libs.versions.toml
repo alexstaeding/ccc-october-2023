@@ -1,0 +1,11 @@
+[versions]
+kotest = "5.7.2"
+
+[plugins]
+kotlin-jvm = "org.jetbrains.kotlin.jvm:1.9.10"
+
+[libraries]
+# TDD is the way
+junit = "org.junit.jupiter:junit-jupiter:5.10.0"
+kotest-core = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest" }
+kotest-property = { module = "io.kotest:kotest-property-jvm", version.ref = "kotest" }
