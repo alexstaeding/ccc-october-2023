@@ -7,17 +7,17 @@ object Framework {
 
     @JvmStatic
     @JvmOverloads
-    fun readInputLines(level: Int, num: Int, prefix: String = "level"): List<String> =
+    fun readInputLines(level: Int, num: String, prefix: String = "level"): List<String> =
         tryAccessFile("$prefix$level") { resolve("$prefix${level}_$num.in").readLines() }
 
     @JvmStatic
     @JvmOverloads
-    fun readInput(level: Int, num: Int, prefix: String = "level"): String =
+    fun readInput(level: Int, num: String, prefix: String = "level"): String =
         tryAccessFile("$prefix$level") { resolve("$prefix${level}_$num.in").readText().trim() }
 
     @JvmStatic
     @JvmOverloads
-    fun writeOutput(level: Int, num: Int, output: String, prefix: String = "level") =
+    fun writeOutput(level: Int, num: String, output: String, prefix: String = "level") =
         tryAccessFile("$prefix$level") { resolve("$prefix${level}_$num.out").writeText(output) }
 
     /**
